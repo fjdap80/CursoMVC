@@ -16,45 +16,81 @@
     <div class="card-body">
         <div class="row">
             <div class="col-12">
-                <button type="button" class="btn btn-success">Crear nuevo</button>
+                @*método "abrirModal()" lo creo abajo*@
+                <button type="button" class="btn btn-success" onclick="abrirModal(null)">Crear nuevo</button>
             </div>
         </div>
-<hr />
+        <hr />
 
-<table id="tabla" class="display cell-border" style="width:100%">
-    <thead>
-        <tr>
-            <th>Nombres</th>
-            <th>Apellidos</th>
-            <th>Correo</th>
-            <th>Activo</th>
-           <th></th>
-        </tr>
-    </thead>
-    <tbody>
+        <table id="tabla" class="display cell-border" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>Correo</th>
+                    <th>Activo</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
 
-    </tbody>
-</table>
-       
     </div>
 </div>
 
-@section scripts{
-    <script>
+<!-- Modal --> @*Será llamado cuando le demos al "Crear nuevo"*@
+<div class="modal fade" id="FormModal" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="staticBackdropLabel">Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            @*el g-2 hace referencia en que solo se van a agrupar las columnas de 2 en 2*@
+            <div class="modal-body g-2">
+                <input id="txtid" type="hidden" value="0" /> @*el valor 0 es para indicarnos que el usuario es nuevo*@
 
-        var tabladata;
+                @*para que salga en una sola fila*@
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label for="txtnombres" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="txtnombres">
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="txtapellidos" class="form-label">Apellidos</label>
+                        <input type="text" class="form-control" id="txtapellidos">
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="txtcorreo" class="form-label">Correo</label>
+                        <input type="email" class="form-control" id="txtcorreo">
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="cboactivo" class="form-label">Activo</label>
+                        <select id="cboactivo" class="form-select">
+                            <option selected>Open this select menu</option>
+                            <option value="1">Si</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
 
 
-        jQuery.ajax({
-            url: '@Url.Action("ListarUsuarios","Home")',
-            type: "GET",
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            success: function (data) {
+                </div>
 
-                console.log(data)
-            }
-        })
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="Guardar()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{   @*hace referencia al Layout.cshtml @RenderSection("scripts", required: false)*@
+<script>
+
+    var tabladata;
+    var filaSeleccionada;
 
        // # es un identificador para el atributo id, en nuestro caso tabla.
        // llamo a la tabla cuyo id es tabla
@@ -68,7 +104,7 @@
                 dataType: "json"
             },
             "columns": [
-                { "data": "Nombres" }, //el data lo ponemos pq así está puesto en el HomeController
+                { "data": "Nombres" }, //el "data" lo ponemos pq así está puesto en el HomeController
                 { "data": "Apellidos" },
                 { "data": "Correo" },
                 {
@@ -81,16 +117,77 @@
                     }
                 },
                 {
-                    "defaultContent": '<button type="button" class="btn btn-primary btn-sm"><i class="fas fa-pen"></i></button>' +
+                    /* botones de editar y eliminar*/
+
+                    "defaultContent": '<button type="button" class="btn btn-primary btn-sm btn-editar"><i class="fas fa-pen"></i></button>' +
                         '<button type="button" class="btn btn-danger btn-sm ms-2"><i class="fas fa-trash"></i></button>',
                     "orderable": false,
                     "searchable": false,
-                    "width":"90px"
+                    "width": "90px"
 
                 }
-            ]
+            ],
+            "language": {
+                "url": "https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_es.json"
+            }
         });
 
-    </script>
+    function abrirModal(json) { /*json pq el formato de data es json*/
+
+        //primero limpia los controles
+
+        $("#txtid").val(0);
+        $("#txtnombres").val("");
+        $("#txtapellidos").val("");
+        $("#txtcorreo").val("");
+        $("#cboactivo").val(1);
+
+        if (json != null) {
+            $("#txtid").val(json.IdUsuario);
+            $("#txtnombres").val(json.Nombres);
+            $("#txtapellidos").val(json.Apellidos);
+            $("#txtcorreo").val(json.Correo);
+            $("#cboactivo").val(json.Activo== true ? 1:0);
+        }
+
+            $("#FormModal").modal("show");
+        }
+
+        /*al presionar el boton dentro del tbody de la tabla hará:*/
+        $("#tabla tbody").on("click", ".btn-editar", function () {
+            /*almaceno la fila seleccionada dentro de la tabla(this)*/
+            filaSeleccionada = $(this).closest("tr");
+
+            /*traemos todos los datos de la fila seleccionada*/
+            var data = tabladata.row(filaSeleccionada).data();
+            console.log(data)
+            abrirModal(data)
+
+
+        })
+
+    function Guardar() {
+        var Usuario = {
+            IdUsuario: $("#txtid").val(),//obtiene el valor seleccionado en el desplegable
+            Activo: $("#cboactivo").val() == 1 ? true:false,  
+            Apellidos: $("#txtapellidos").val(),
+            Correo: $("#txtcorreo").val(),            
+            Nombres: $("#txtnombres").val()  
+
+        }
+
+        if (Usuario.IdUsuario == 0) {
+            tabladata.row.add(Usuario).draw(false);
+        }
+            else {
+
+            tabladata.row(filaSeleccionada).data(Usuario).draw(false);
+            filaSeleccionada
+        }
+        $("#FormModal").modal("hide");
+        }
     
-    }
+
+</script>
+
+}
