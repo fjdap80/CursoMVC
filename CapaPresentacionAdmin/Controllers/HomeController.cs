@@ -28,7 +28,7 @@ namespace CapaPresentacionAdmin.Controllers
         }
 
         // método que nos permite ejecutar REGISTRAR y EDITAR
-        [HttpGet]
+        [HttpPost]
         public JsonResult GuardarUsuario(Usuario objeto)
         {
             object resultado; //variable que nos permite almacenar cualquier valor

@@ -48,35 +48,39 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             @*el g-2 hace referencia en que solo se van a agrupar las columnas de 2 en 2*@
-            <div class="modal-body g-2">
+            <div class="modal-body">
                 <input id="txtid" type="hidden" value="0" /> @*el valor 0 es para indicarnos que el usuario es nuevo*@
 
                 @*para que salga en una sola fila*@
-                <div class="row">
-                    <div class="col-sm-6">
-                        <label for="txtnombres" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="txtnombres">
-                    </div>
-                    <div class="col-sm-6">
-                        <label for="txtapellidos" class="form-label">Apellidos</label>
-                        <input type="text" class="form-control" id="txtapellidos">
-                    </div>
-                    <div class="col-sm-6">
-                        <label for="txtcorreo" class="form-label">Correo</label>
-                        <input type="email" class="form-control" id="txtcorreo">
-                    </div>
-                    <div class="col-sm-6">
-                        <label for="cboactivo" class="form-label">Activo</label>
-                        <select id="cboactivo" class="form-select">
-                            <option selected>Open this select menu</option>
-                            <option value="1">Si</option>
-                            <option value="0">No</option>
-                        </select>
-                    </div>
-
-
+            <div class="row g-2">
+                <div class="col-sm-6">
+                    <label for="txtnombres" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="txtnombres">
                 </div>
-
+                <div class="col-sm-6">
+                    <label for="txtapellidos" class="form-label">Apellidos</label>
+                    <input type="text" class="form-control" id="txtapellidos">
+                </div>
+                <div class="col-sm-6">
+                    <label for="txtcorreo" class="form-label">Correo</label>
+                    <input type="email" class="form-control" id="txtcorreo">
+                </div>
+                <div class="col-sm-6">
+                    <label for="cboactivo" class="form-label">Activo</label>
+                    <select id="cboactivo" class="form-select">
+                        <option selected>Open this select menu</option>
+                        <option value="1">Si</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-2" >
+                <div class="col-12">
+                    <div id="mensajeError"class="alert alert-danger" role="alert">
+                        A simple danger alert—check it out!
+                    </div>
+                </div>
+            </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -141,6 +145,7 @@
         $("#txtapellidos").val("");
         $("#txtcorreo").val("");
         $("#cboactivo").val(1);
+        $("#mensajeError").hide();
 
         if (json != null) {
             $("#txtid").val(json.IdUsuario);
@@ -178,17 +183,26 @@
         }
 
         jQuery.ajax({
-            url: '@Url.Action("GuardarUsuario", "Home")',
+            url: '@Url.Action("GuardarUsuario","Home")',
             type: "POST",
             data: JSON.stringify({ objeto : Usuario}),
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             success: function (data) {
 
+                debugger;
                 //USUARIO NUEVO
                 if (Usuario.IdUsuario == 0) {
 
-                    tabladata.row.add(Usuario).draw(false);
+                    if (data.resultado != 0) {
+                        Usuario.IdUsuario = data.resultado;
+                        tabladata.row.add(Usuario).draw(false);
+                        $("#FormModal").modal("hide");
+
+                    } else {
+                        alert(data.mensaje)
+
+                    }                   
 
                 }
                 else {
@@ -205,9 +219,9 @@
             }
         });
 
-              
 
-        $("#FormModal").modal("hide");
+
+        
     }
 
 
