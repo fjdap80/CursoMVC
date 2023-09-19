@@ -5,14 +5,24 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Net.Mail;
+using System.Net;
+using System.IO;
+
 namespace CapaNegocio
 {
     public class CN_Recursos
     {
+        public static string GenerarClave()
+        {
+            string clave = Guid.NewGuid().ToString("N").Substring(0, 6);
+            return clave;
+        }
+
         //encriptación DE TEXTO en SHA256
         public static string ConvertirSha256(string texto)
         {
-            StringBuilder Sb = new StringBuilder();            
+            StringBuilder Sb = new StringBuilder();
             using (SHA256 hash = SHA256Managed.Create())
             {
                 Encoding enc = Encoding.UTF8;
@@ -22,5 +32,38 @@ namespace CapaNegocio
             }
             return Sb.ToString();
         }
+
+        public static bool EnviarCorreo(string correo, string asunto, string mensaje)
+        {
+            bool resultado = false;
+            try
+            {
+                MailMessage mail = new MailMessage();
+                mail.To.Add(correo);
+                mail.From = new MailAddress("asdepicas58@gmail.com");
+                mail.Subject = asunto;
+                mail.Body = mensaje;
+                mail.IsBodyHtml = true;
+
+                //servidor que va a mandar nuestro mensaje
+                var smtp = new SmtpClient()
+                {
+                    Credentials = new NetworkCredential("asdepicas58@gmail.com", "ofmbwjikgdjkquoy"),
+                    Host = "smtp.gmail.com",
+                    Port = 587,
+                    EnableSsl = true
+                };
+                smtp.Send(mail);
+                resultado = true;
+            }
+            catch (Exception ex)
+            {
+                resultado = false;
+            }
+            return resultado;
+        }
+
+
     }
 }
+

@@ -12,7 +12,7 @@ namespace CapaEntidad
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
         public Marca oMarca { get; set; } // IdMarca int references Marca(IdMarca) en BBDD
-        public Categoria oCategoria { get; set; } // IdCategoria int references Categoria(IdCategoria) en BBDD
+        public Usuario oCategoria { get; set; } // IdCategoria int references Categoria(IdCategoria) en BBDD
         public decimal Precio { get; set; }
         public int Stock { get; set; }
         public string RutaImagen { get; set; }
