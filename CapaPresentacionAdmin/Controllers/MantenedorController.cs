@@ -130,7 +130,7 @@ namespace CapaPresentacionAdmin.Controllers
             }
             else
             {
-                return Json(new { operacion_exitosa = false, mensaje = "El formato del precio debe ser ##.##" }, JsonRequestBehavior.AllowGet);
+                return Json(new { operacionExitosa = false, mensaje = "El formato del precio debe ser ##.##" }, JsonRequestBehavior.AllowGet);
             }
 
             if (oProducto.IdProducto == 0)
@@ -168,7 +168,7 @@ namespace CapaPresentacionAdmin.Controllers
                         guardar_imagen_exito = false;
                     }
 
-                    if (guardar_imagen_exito = true)
+                    if (guardar_imagen_exito == true)
                     {
                         oProducto.RutaImagen = ruta_guardar;
                         oProducto.Nombre = nombre_imagen;
@@ -181,7 +181,7 @@ namespace CapaPresentacionAdmin.Controllers
                 }
             }
 
-            return Json(new { operacion_exitosa = operacion_exitosa, idGenerado = oProducto.IdProducto, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+            return Json(new { operacionExitosa = operacion_exitosa, idGenerado = oProducto.IdProducto, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

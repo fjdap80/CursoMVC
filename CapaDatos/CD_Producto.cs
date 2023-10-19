@@ -141,10 +141,9 @@ namespace CapaDatos
             {
 
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
-                {
-                    SqlCommand cmd = new SqlCommand("sp_RegistrarProducto", oconexion);
-
+                {                    
                     string query = "update producto set RutaImagen = @rutaimagen, NombreImagen=@nombreimagen where IdProducto=@idproducto";
+                    SqlCommand cmd = new SqlCommand(query, oconexion);
                     cmd.Parameters.AddWithValue("@rutaimagen", obj.RutaImagen);
                     cmd.Parameters.AddWithValue("@nombreimagen", obj.NombreImagen);
                     cmd.Parameters.AddWithValue("@idproducto", obj.IdProducto);
