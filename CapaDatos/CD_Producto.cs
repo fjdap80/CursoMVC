@@ -23,9 +23,9 @@ namespace CapaDatos
                     sb.AppendLine("select p.IdProducto,p.Nombre,p.Descripcion,");
                     sb.AppendLine("m.IdMarca,m.Descripcion[DesMarca],");
                     sb.AppendLine("c.IdCategoria,c.Descripcion[DesCategoria],");
-                    sb.AppendLine("p.Precio,p.Stock,p.RutaImagen,p.NombreImagen,p.Activo,");
-                    sb.AppendLine("from PRODUCTO p,");
-                    sb.AppendLine("inner join MARCA m on m.IdMarca = p.IdMarca,");
+                    sb.AppendLine("p.Precio,p.Stock,p.RutaImagen,p.NombreImagen,p.Activo");
+                    sb.AppendLine("FROM PRODUCTO p");
+                    sb.AppendLine("inner join MARCA m on m.IdMarca = p.IdMarca");
                     sb.AppendLine("inner join CATEGORIA c on c.IdCategoria = p.IdCategoria");
                    
                     SqlCommand cmd = new SqlCommand(sb.ToString(), oconexion);//comando que permite ejecutar la query
@@ -54,8 +54,10 @@ namespace CapaDatos
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine("Error: " + ex.Message);
+                // También puedes registrar la excepción en un archivo de registro.
                 lista = new List<Producto>();
             }
 

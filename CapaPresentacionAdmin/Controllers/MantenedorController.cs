@@ -171,7 +171,7 @@ namespace CapaPresentacionAdmin.Controllers
                     if (guardar_imagen_exito == true)
                     {
                         oProducto.RutaImagen = ruta_guardar;
-                        oProducto.Nombre = nombre_imagen;
+                        oProducto.NombreImagen = nombre_imagen;
                         bool rspta = new CN_Producto().GuardarDatosImagen(oProducto, out mensaje);
                     }
                     else
