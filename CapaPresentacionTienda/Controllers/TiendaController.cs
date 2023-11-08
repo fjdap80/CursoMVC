@@ -17,6 +17,21 @@ namespace CapaPresentacionTienda.Controllers
             return View();
         }
 
+        public ActionResult DetalleProducto(int idproducto=0)
+        {
+            Producto oProducto = new Producto();
+            bool conversion;
+            oProducto = new CN_Producto().Listar().Where(p => p.IdProducto == idproducto).FirstOrDefault();
+
+            if(oProducto != null)
+            {
+                oProducto.Base64 = CN_Recursos.ConvertirBase64(Path.Combine(oProducto.RutaImagen, oProducto.NombreImagen), out conversion);
+                oProducto.Extension = Path.GetExtension(oProducto.NombreImagen);
+            }
+            return View(oProducto);
+        }
+
+
         //METODO QUE DEVUELVE LISTA DE CATEGORÍAS
         [HttpGet]
         public JsonResult ListaCategorias()
@@ -30,10 +45,18 @@ namespace CapaPresentacionTienda.Controllers
         [HttpPost]
         public JsonResult ListarMarcaPorCategoria(int idcategoria)
         {
+            // Agrega un registro para verificar que el método se está ejecutando.
+            Console.WriteLine("Método ListarMarcaPorCategoria se está ejecutando.");
+
             List<Marca> lista = new List<Marca>();
             lista = new CN_Marca().ListarMarcaPorCategoria(idcategoria);
+
+            // Agrega un registro para verificar el número de elementos en la lista.
+            Console.WriteLine($"Número de elementos en la lista: {lista.Count}");
+
             return Json(new { data = lista }, JsonRequestBehavior.AllowGet);
         }
+
 
         //listar todos los productos deacuerdo a una marca y categoría seleccionada
         [HttpPost]

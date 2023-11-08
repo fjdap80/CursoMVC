@@ -152,7 +152,7 @@ namespace CapaDatos
 
 
                     SqlCommand cmd = new SqlCommand(sb.ToString(), oconexion);//comando que permite ejecutar la query
-                    cmd.Parameters.AddWithValue("idcategoria", "idcategoria");
+                    cmd.Parameters.AddWithValue("@idcategoria", idcategoria);
                     cmd.CommandType = CommandType.Text;//comando de tipo texto
                     oconexion.Open();
                     using (SqlDataReader dr = cmd.ExecuteReader())//lee todos los resultados del select
