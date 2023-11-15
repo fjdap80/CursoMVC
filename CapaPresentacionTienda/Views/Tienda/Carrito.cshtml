@@ -409,12 +409,14 @@
                 MontoTotal: 0,
                 Contacto: $("#txtnombrecontacto").val(),
                 IdDistrito: $("#cbodistrito").val(),
-                Telefono: $("#txttelefono").val(),
-                Direccion: $("#txtdireccion").val()
+                Direccion: $("#txtdireccion").val(),
+                Telefono: $("#txttelefono").val()
+                
             }
 
             var lista_carrito = [];
-            $("input.input_cantidad").each(function (i) {
+            $("input.input-cantidad").each(function (i) {
+
                 var producto = $(this).data("oProducto");
                 var cantidad = parseFloat($(this).val());
 

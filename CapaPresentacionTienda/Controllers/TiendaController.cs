@@ -203,6 +203,7 @@ namespace CapaPresentacionTienda.Controllers
         [HttpPost]
         public async Task<JsonResult> ProcesarPago(List<Carrito> oListaCarrito, Venta oVenta)
         {
+            
             decimal total = 0;
             DataTable detalle_venta = new DataTable();
             detalle_venta.Locale = new CultureInfo("es-PE");
@@ -210,27 +211,19 @@ namespace CapaPresentacionTienda.Controllers
             detalle_venta.Columns.Add("Cantidad", typeof(int));
             detalle_venta.Columns.Add("Total", typeof(decimal));
 
-
-            foreach(Carrito oCarrito in oListaCarrito)
+            foreach (Carrito oCarrito in oListaCarrito)
             {
-
-                if (oCarrito == null || oCarrito.oProducto == null)
-                {
-                    // Manejar la situación cuando oCarrito o su propiedad oProducto es null.
-                    return Json(new { Status = false, Error = "oCarrito o su propiedad oProducto es null" });
-                }
-
                 decimal subtotal = Convert.ToDecimal(oCarrito.Cantidad.ToString()) * oCarrito.oProducto.Precio;
                 total += subtotal;
                 detalle_venta.Rows.Add(new object[] {
-                    oCarrito.oProducto.IdProducto,
-                    oCarrito.Cantidad,
-                    subtotal
-                });
+                oCarrito.oProducto.IdProducto,
+                oCarrito.Cantidad,
+                subtotal
+        });
             }
 
             oVenta.MontoTotal = total;
-            oVenta.IdCliente= ((Cliente)Session["Cliente"]).IdCliente;
+            oVenta.IdCliente = ((Cliente)Session["Cliente"]).IdCliente;
             TempData["Venta"] = oVenta;
             TempData["DetalleVenta"] = detalle_venta;
             return Json(new { Status = true, Link = "/Tienda/PagoEfectuado?idTransaccion=code0001&status=true" }, JsonRequestBehavior.AllowGet);
