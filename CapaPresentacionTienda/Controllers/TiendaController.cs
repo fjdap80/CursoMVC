@@ -22,17 +22,39 @@ namespace CapaPresentacionTienda.Controllers
             return View();
         }
 
+        //public ActionResult DetalleProducto(int idproducto = 0)
+        //{
+        //    Producto oProducto = new Producto();
+        //    bool conversion;
+        //    oProducto = new CN_Producto().Listar().Where(p => p.IdProducto == idproducto).FirstOrDefault();
+
+        //    if(oProducto != null)
+        //    {
+        //        oProducto.Base64 = CN_Recursos.ConvertirBase64(Path.Combine(oProducto.RutaImagen, oProducto.NombreImagen), out conversion);
+        //        oProducto.Extension = Path.GetExtension(oProducto.NombreImagen);
+        //    }
+        //    return View(oProducto);
+        //}
+
         public ActionResult DetalleProducto(int idproducto = 0)
         {
             Producto oProducto = new Producto();
             bool conversion;
+
+            // Modifica la siguiente línea para manejar si el producto no se encuentra
             oProducto = new CN_Producto().Listar().Where(p => p.IdProducto == idproducto).FirstOrDefault();
 
-            if(oProducto != null)
+            if (oProducto != null)
             {
                 oProducto.Base64 = CN_Recursos.ConvertirBase64(Path.Combine(oProducto.RutaImagen, oProducto.NombreImagen), out conversion);
                 oProducto.Extension = Path.GetExtension(oProducto.NombreImagen);
             }
+            else
+            {
+                // Puedes redirigir al usuario a una página de error o mostrar un mensaje adecuado
+                return RedirectToAction("ProductoNoEncontrado");
+            }
+
             return View(oProducto);
         }
 
